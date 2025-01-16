@@ -3,12 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - NumberOne
+  - LevelManager
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Number
   - Water
   - UI
   - 
@@ -40,4 +42,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Tower
+    uniqueID: 336312543
+    locked: 0
+  - name: Numbers
+    uniqueID: 648850211
     locked: 0
