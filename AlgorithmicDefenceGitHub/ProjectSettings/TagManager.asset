@@ -49,3 +49,6 @@ TagManager:
   - name: Numbers
     uniqueID: 648850211
     locked: 0
+  - name: Projectiles
+    uniqueID: 135414347
+    locked: 0
