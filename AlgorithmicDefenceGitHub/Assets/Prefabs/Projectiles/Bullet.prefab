@@ -165,5 +165,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletRb: {fileID: 6335575684270119070}
-  directionRb: {fileID: 0}
-  bulletSpeed: 5
+  bulletSpeed: 20

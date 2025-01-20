@@ -5,12 +5,11 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D bulletRb;
-    [SerializeField] private Rigidbody2D barrelRb;
 
     [SerializeField] private float bulletSpeed = 5f;
     private void Awake()
     {
-        barrelRb =
+        
     }
     private void Update()
     {
@@ -18,7 +17,6 @@ public class Bullet : MonoBehaviour
     }
     private void Move()
     {
-        bulletRb.transform.rotation = barrelRb.transform.rotation;
         bulletRb.velocity = transform.up * bulletSpeed;
     }
 }

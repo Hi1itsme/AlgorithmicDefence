@@ -62,7 +62,7 @@ public class PistolTowerController : MonoBehaviour
         }
     private void Shoot()
         {
-        GameObject bulletobj = Instantiate(bulletPrefab, firingPoint.position, Quaternion.identity);
+        GameObject bulletobj = Instantiate(bulletPrefab, firingPoint.position, firingPoint.rotation);
         }
     private void RotateTowardsTarget()
     {
