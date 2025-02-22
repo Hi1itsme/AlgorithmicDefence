@@ -1,28 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NumberController : MonoBehaviour
 {
-    
-    // Start is called before the first frame update
     void Start()
     {
-        
+        if (LevelManager.main == null || LevelManager.main.startPoint == null)
+        {
+            Debug.LogError("LevelManager.main or startPoint is not set up!");
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        // Empty for now
     }
-    public void DealDamage(float damage)
-    {
-        
-    }
+
     public void SpawnNumber(GameObject number)
     {
-        Instantiate(number, LevelManager.main.startPoint.position, Quaternion.identity);
-
+        if (number != null)
+        {
+            Instantiate(number, LevelManager.main.startPoint.position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("Attempted to spawn a null number prefab!");
+        }
     }
 }

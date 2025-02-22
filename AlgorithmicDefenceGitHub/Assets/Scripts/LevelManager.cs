@@ -1,70 +1,76 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    
-    One oneScript;
+    [SerializeField] private GameObject onePrefab; // Assign Number1 prefab
+    [SerializeField] private GameObject twoPrefab; // Assign Number2 prefab
 
     public static LevelManager main;
     public Transform[] path;
     public Transform startPoint;
 
     private bool isSpawning = false;
-    private bool oneTimerActive = false;
-    
-    private float timeSinceLastSpawn;
-    private float enemyRate;
-    private float enemiesLeftToSpawn;
-    private float oneTiming;
+    private int waveCount = 0;
 
-    private int WaveCount;
-
-    private string WaveCountName;
     private void Awake()
     {
-        main = this;  
+        main = this;
     }
+
     private void Start()
     {
-        oneScript = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<One>();
-        
+        if (onePrefab == null || twoPrefab == null)
+        {
+            Debug.LogError("OnePrefab or TwoPrefab not assigned in LevelManager!");
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
         WaveSpawner();
     }
-     private void WaveSpawner()
-    {
-        if(Input.GetKeyDown("space"))
-        {
-            isSpawning = true;
-        }
-        if(isSpawning)
-        {
-            WaveCount++;
-        }
 
-        
-        if(isSpawning && WaveCount == 1)
-        {
-            StartCoroutine(Wave1());
-        }
-        
-        
-    }
-    IEnumerator Wave1()
+    private void WaveSpawner()
     {
-        for(int i = 1; i < 15; i ++)
+        if (Input.GetKeyDown(KeyCode.Space) && !isSpawning)
         {
+            waveCount++;
             isSpawning = true;
-            oneScript.SpawnNumberOne();
-            yield return new WaitForSeconds(1);
+            Debug.Log($"Starting Wave {waveCount}");
+            StartCoroutine(RunWave());
         }
-        
+    }
+
+    private IEnumerator RunWave()
+    {
+        if (waveCount == 1)
+        {
+            yield return StartCoroutine(Wave1());
+        }
+        else if (waveCount == 2)
+        {
+            yield return StartCoroutine(Wave2());
+        }
+        isSpawning = false;
+        Debug.Log($"Wave {waveCount} completed!");
+    }
+
+    private IEnumerator Wave1()
+    {
+        for (int i = 0; i < 14; i++)
+        {
+            Instantiate(onePrefab, startPoint.position, Quaternion.identity);
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
+    private IEnumerator Wave2()
+    {
+        for (int i = 0; i < 14; i++)
+        {
+            Instantiate(twoPrefab, startPoint.position, Quaternion.identity);
+            yield return new WaitForSeconds(1f);
+        }
     }
 }

@@ -1,31 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class One : MonoBehaviour
+public class One : NumberController, INumberEnemy
 {
-    public GameObject OneSprite;
-    public int lvl1 =  1;
-    // Start is called before the first frame update
-    NumberController numberControllerScript;
-    // Start is called before the first frame update
+    [SerializeField] private Sprite[] numberSprites;
+    [SerializeField] private GameObject OneSprite; // The Number1 prefab
+
+    private int level = 1;
+    private int originalLevel = 1;
+    private SpriteRenderer spriteRenderer;
+
     void Start()
     {
-        numberControllerScript = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<NumberController>();
-        
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+        }
+        UpdateSprite();
     }
 
-    // Update is called once per frame
-    void Update()
+    public int GetLevel()
     {
-        
+        return level;
     }
+
+    public void TakeDamage(int damage)
+    {
+        level -= damage;
+        if (level <= 0)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            UpdateSprite();
+        }
+    }
+
     public void SpawnNumberOne()
     {
-        numberControllerScript.SpawnNumber(OneSprite);
+        if (OneSprite != null)
+        {
+            SpawnNumber(OneSprite); // Inherited from NumberController
+        }
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    private void UpdateSprite()
     {
-        Destroy(this.gameObject);
+        if (spriteRenderer != null && numberSprites != null && level > 0 && level <= numberSprites.Length)
+        {
+            spriteRenderer.sprite = numberSprites[level - 1];
+        }
     }
 }

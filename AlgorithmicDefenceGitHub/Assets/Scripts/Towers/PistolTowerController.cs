@@ -1,78 +1,82 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 public class PistolTowerController : MonoBehaviour
 {
     [SerializeField] private Transform turretRotationPoint;
-
     [SerializeField] private LayerMask enemyMask;
-
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firingPoint;
-
     [SerializeField] private float targetingRange = 5f;
-    [SerializeField] private float rotationSpeed;
+    [SerializeField] private float rotationSpeed = 200f;
     [SerializeField] private float bps = 1f;
 
-    private float fireRate;
-    private float damage = 1;
-    private float peirce = 1;
     private float timeUntilFire;
-
     private Transform target;
-    // Start is called before the first frame update
+
     private void Update()
     {
-        if(target == null)
+        if (target == null || !CheckTargetIsInRange())
         {
             FindTarget();
-            return;
+            if (target == null) return;
         }
+
         RotateTowardsTarget();
-        if(!CheckTargetIsInRange())
+
+        timeUntilFire += Time.deltaTime;
+        if (timeUntilFire >= 1f / bps)
         {
-            target = null;
-        }
-        else
-        {
-            if(timeUntilFire <= 0)
-            {
-                Shoot(); 
-            }
-            timeUntilFire += Time.deltaTime;
-            if(timeUntilFire >= bps)
-            {
-                timeUntilFire = 0f;
-            }
+            Shoot();
+            timeUntilFire = 0f;
         }
     }
+
     private void FindTarget()
     {
-    RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, targetingRange, (Vector2)transform.position, 0f, enemyMask);
-    if (hits.Length > 0)
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, targetingRange, enemyMask);
+        Debug.Log($"Found {hits.Length} colliders in range.");
+        foreach (var hit in hits)
         {
-        target = hits[0].transform;
+            INumberEnemy enemy = hit.GetComponent<INumberEnemy>();
+            Debug.Log($"Checking collider {hit.name}, INumberEnemy: {(enemy != null ? "Found" : "Not Found")}");
+            if (enemy != null)
+            {
+                target = hit.transform;
+                Debug.Log($"Target acquired: {hit.name} at level {enemy.GetLevel()}");
+                break;
+            }
         }
     }
+
     private bool CheckTargetIsInRange()
-        {
-        return Vector2.Distance(target.position, transform.position) <= targetingRange;
-        }
+    {
+        if (target == null) return false;
+        bool inRange = Vector2.Distance(target.position, transform.position) <= targetingRange;
+        if (!inRange) Debug.Log($"Target {target.name} out of range.");
+        return inRange;
+    }
+
     private void Shoot()
-        {
-        GameObject bulletobj = Instantiate(bulletPrefab, firingPoint.position, firingPoint.rotation);
-        }
+    {
+        Instantiate(bulletPrefab, firingPoint.position, firingPoint.rotation);
+    }
+
     private void RotateTowardsTarget()
     {
-        float angle = Mathf.Atan2(target.position.y - transform.position.y, target.position.x - transform.position.x) * Mathf.Rad2Deg - 90f;
-        Quaternion targetRotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
-        turretRotationPoint.rotation = targetRotation;
+        Vector2 direction = (target.position - transform.position).normalized;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+        Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
+        turretRotationPoint.rotation = Quaternion.RotateTowards(
+            turretRotationPoint.rotation,
+            targetRotation,
+            rotationSpeed * Time.deltaTime
+        );
     }
+
     private void OnDrawGizmosSelected()
     {
         Handles.color = Color.cyan;
-        Handles.DrawWireDisc(transform.position, transform.forward, targetingRange);
+        Handles.DrawWireDisc(transform.position, Vector3.forward, targetingRange);
     }
 }

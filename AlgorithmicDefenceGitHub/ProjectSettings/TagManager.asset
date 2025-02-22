@@ -4,8 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - NumberOne
   - LevelManager
+  - Number
+  - NumberOne
   layers:
   - Default
   - TransparentFX
@@ -13,7 +14,7 @@ TagManager:
   - Number
   - Water
   - UI
-  - 
+  - ememyMask
   - 
   - 
   - 

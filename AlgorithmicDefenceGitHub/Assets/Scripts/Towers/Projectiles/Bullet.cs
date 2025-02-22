@@ -1,22 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class BULLETCONTROLLER : MonoBehaviour
 {
-    [SerializeField] private Rigidbody2D bulletRb;
+    [SerializeField] private float speed = 20f;
+    [SerializeField] private int damage = 1; // Configurable in Inspector
 
-    [SerializeField] private float bulletSpeed = 5f;
-    private void Awake()
+    private Vector3 direction;
+
+    private void Start()
     {
-        
+        // Bullet inherits rotation from firing point
+        direction = transform.up; // Assumes sprite faces up
     }
+
     private void Update()
     {
-        Move();
+        transform.position += direction * speed * Time.deltaTime;
     }
-    private void Move()
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        bulletRb.velocity = transform.up * bulletSpeed;
+        INumberEnemy enemy = other.GetComponent<INumberEnemy>();
+        if (enemy != null)
+        {
+            enemy.TakeDamage(damage);
+            Destroy(gameObject); // Destroy bullet on hit
+        }
     }
 }

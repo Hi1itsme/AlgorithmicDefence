@@ -103,8 +103,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20b015c9e1ac3224c8d6da1f460e8cc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numberSprites: []
   OneSprite: {fileID: 4182228767649276208}
-  lvl1: 1
 --- !u!114 &-867196582784525702
 MonoBehaviour:
   m_ObjectHideFlags: 0
