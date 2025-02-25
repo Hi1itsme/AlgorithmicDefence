@@ -2,14 +2,13 @@ using UnityEngine;
 
 public class BULLETCONTROLLER : MonoBehaviour
 {
-    [SerializeField] private float speed = 20f;
+    [SerializeField] private float speed = 10f;
     [SerializeField] private int damage = 1; // Configurable in Inspector
 
     private Vector3 direction;
 
     private void Start()
     {
-        // Bullet inherits rotation from firing point
         direction = transform.up; // Assumes sprite faces up
     }
 
@@ -24,7 +23,12 @@ public class BULLETCONTROLLER : MonoBehaviour
         if (enemy != null)
         {
             enemy.TakeDamage(damage);
-            Destroy(gameObject); // Destroy bullet on hit
+            Destroy(gameObject); // Destroy bullet after hitting the first enemy
+        }
+        else
+        {
+            // Optional: Destroy if hitting non-enemy objects (e.g., walls)
+            Destroy(gameObject);
         }
     }
 }

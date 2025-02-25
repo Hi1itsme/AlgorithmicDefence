@@ -9,6 +9,7 @@ public class Two : NumberController, INumberEnemy
     private int level = 2;
     private int originalLevel = 2;
     private SpriteRenderer spriteRenderer;
+    private EnemyMovement enemyMovement; // To access pathIndex
 
     void Start()
     {
@@ -16,6 +17,11 @@ public class Two : NumberController, INumberEnemy
         if (spriteRenderer == null)
         {
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+        }
+        enemyMovement = GetComponent<EnemyMovement>(); // Get the movement component
+        if (enemyMovement == null)
+        {
+            Debug.LogError($"EnemyMovement missing on {gameObject.name}!");
         }
         UpdateSprite();
     }
@@ -54,11 +60,22 @@ public class Two : NumberController, INumberEnemy
         }
 
         GameObject prefabToSpawn = lowerNumberPrefabs[newLevel - 1]; // Should be Number1 for newLevel = 1
+        int parentPathIndex = enemyMovement != null ? enemyMovement.CurrentPathIndex : 0; // Use parent's path index via property
+        Debug.Log($"Splitting Number2 at path index {parentPathIndex}, spawning {originalLevel} Number1s");
+
         for (int i = 0; i < originalLevel; i++) // Spawn 2 Number1s for Number2
         {
             Vector3 offset = Random.insideUnitCircle * 0.5f;
             GameObject newNumber = Instantiate(prefabToSpawn, transform.position + offset, Quaternion.identity);
-            // No further splitting needed for Number1 or Number2 in this case
+            EnemyMovement newMovement = newNumber.GetComponent<EnemyMovement>();
+            if (newMovement != null)
+            {
+                newMovement.InitializeMovement(parentPathIndex); // Use public method for spawned enemies
+            }
+            else
+            {
+                Debug.LogError($"EnemyMovement missing on spawned prefab {prefabToSpawn.name}");
+            }
         }
     }
 

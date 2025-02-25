@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -6192340737241692975}
   - component: {fileID: 912801823445821859}
   m_Layer: 3
-  m_Name: NumberOne
+  m_Name: 1
   m_TagString: NumberOne
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

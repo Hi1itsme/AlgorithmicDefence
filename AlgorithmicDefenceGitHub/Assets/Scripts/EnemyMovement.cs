@@ -8,7 +8,13 @@ public class EnemyMovement : MonoBehaviour
     private Transform target;
     private int pathIndex = 0;
 
-    private void Start(int? initialPathIndex = null)
+    private void Start()
+    {
+        InitializeMovement(null); // Use null for initial spawns (nearest waypoint)
+    }
+
+    // Public method to initialize movement for spawned enemies (e.g., after splitting or initial spawn)
+    public void InitializeMovement(int? initialPathIndex = null)
     {
         if (rb == null)
         {
@@ -29,7 +35,7 @@ public class EnemyMovement : MonoBehaviour
 
         if (initialPathIndex.HasValue)
         {
-            // Use the provided path index (for spawned enemies, move to next checkpoint)
+            // For spawned enemies, move to the next checkpoint
             pathIndex = initialPathIndex.Value;
             if (pathIndex < LevelManager.main.path.Length - 1)
             {
@@ -39,15 +45,15 @@ public class EnemyMovement : MonoBehaviour
             }
             else
             {
-                // If already at or past the last waypoint, destroy the enemy (optional behavior)
-                Debug.LogWarning($"Spawned enemy {gameObject.name} at or beyond last path index, destroying.");
-                Destroy(gameObject);
-                return;
+                // If beyond the last waypoint, move to the last checkpoint or destroy
+                pathIndex = LevelManager.main.path.Length - 1;
+                target = LevelManager.main.path[pathIndex];
+                Debug.LogWarning($"Spawned enemy {gameObject.name} at or beyond last path index, moving to last checkpoint: {target.position}");
             }
         }
         else
         {
-            // For initial spawns (e.g., from LevelManager), find the nearest waypoint
+            // For initial spawns, find the nearest waypoint
             float closestDistance = float.MaxValue;
             int closestIndex = 0;
             float minDistanceThreshold = 0.01f; // Ignore very close waypoints
@@ -70,12 +76,18 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    // Public property to access pathIndex safely
+    public int CurrentPathIndex
+    {
+        get { return pathIndex; }
+    }
+
     private void Update()
     {
         if (target == null)
         {
             Debug.LogWarning($"Target is null for {gameObject.name}, reinitializing...");
-            Start(); // Reinitialize with nearest waypoint (remove in production if not needed)
+            InitializeMovement(); // Reinitialize with nearest waypoint (remove in production if not needed)
             return;
         }
 

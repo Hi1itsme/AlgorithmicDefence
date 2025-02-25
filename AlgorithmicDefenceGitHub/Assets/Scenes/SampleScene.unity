@@ -612,8 +612,8 @@ MonoBehaviour:
     m_Bits: 8
   bulletPrefab: {fileID: 2015363802037450886, guid: 2924218179b70264ab909f2364f277e9, type: 3}
   firingPoint: {fileID: 681530541}
-  targetingRange: 5
-  rotationSpeed: 200
+  targetingRange: 3
+  rotationSpeed: 1000
   bps: 1
 --- !u!1 &923775737
 GameObject:
@@ -844,8 +844,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a838d216299a1db4b812e9c882aa701a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onePrefab: {fileID: 4182228767649276208, guid: 8dd12278347613641a3bc66712ca9940, type: 3}
-  twoPrefab: {fileID: 2279181532788950286, guid: 280d84e314e9b6d4c9b1b3100c3f133f, type: 3}
   path:
   - {fileID: 504027410}
   - {fileID: 37208385}
